@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>RIFF Check-in</title>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;background:#111;color:#fff;margin:0;text-align:center}
+main{max-width:520px;margin:auto;padding:24px 16px}h1{margin:8px 0}.sub{opacity:.8;margin-bottom:20px}
+#reader{background:#fff;color:#111;border-radius:14px;overflow:hidden}
+#status{margin-top:18px;padding:18px;border-radius:14px;display:none;font-size:18px}
+.ok{background:#147a37}.bad{background:#a32626}.info{background:#444}
+button{font-size:18px;padding:14px 20px;border:0;border-radius:10px;margin-top:14px}
+</style></head><body><main>
+<h1>RIFF CHECK-IN</h1><div class="sub">Náttfatapartý: Paddington — camera test</div>
+<div id="reader"></div><div id="status"></div>
+<button id="again" style="display:none" onclick="restart()">SCAN NEXT</button>
+</main><script>
+let scanner, busy=false;
+function show(msg,cls){const s=document.getElementById('status');s.className=cls;s.innerHTML=msg;s.style.display='block'}
+function start(){busy=false;document.getElementById('status').style.display='none';document.getElementById('again').style.display='none';
+ scanner=new Html5QrcodeScanner("reader",{fps:10,qrbox:{width:250,height:250},rememberLastUsedCamera:true},false);
+ scanner.render(async text=>{if(busy)return;busy=true;await scanner.clear();show("<b>✓ QR READ</b><br><br>"+escapeHtml(text)+"<br><br><small>Camera works. Next we connect live check-in.</small>","ok");document.getElementById('again').style.display='inline-block'},()=>{});
+}
+function restart(){document.getElementById('reader').innerHTML='';start()}
+function escapeHtml(x){return x.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+window.addEventListener('load',start);
+</script></body></html>
